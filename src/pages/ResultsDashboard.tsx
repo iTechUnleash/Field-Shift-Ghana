@@ -60,6 +60,30 @@ export function ResultsDashboard() {
 
   const region = useMemo(() => getRegionById(answers?.regionId || ''), [answers]);
 
+  const rainfallSlope = rotation?.climate.rainfallTrendPct ?? 0;
+  const rainfallTrend: 'up' | 'down' | 'neutral' =
+    rainfallSlope > 0 ? 'up' : rainfallSlope < 0 ? 'down' : 'neutral';
+  const rainfallAccent: 'green' | 'coral' | 'gold' =
+    rainfallSlope > 0 ? 'green' : rainfallSlope < 0 ? 'coral' : 'gold';
+  const rainfallFormatted =
+    rainfallSlope > 0
+      ? `+${rainfallSlope}%`
+      : rainfallSlope < 0
+        ? `−${Math.abs(rainfallSlope)}%`
+        : `0.0%`;
+
+  const tempSlope = rotation?.climate.tempTrendC ?? 0;
+  const tempTrend: 'up' | 'down' | 'neutral' =
+    tempSlope > 0 ? 'up' : tempSlope < 0 ? 'down' : 'neutral';
+  const tempAccent: 'gold' | 'green' | 'coral' =
+    tempSlope > 0 ? 'gold' : tempSlope < 0 ? 'green' : 'gold';
+  const tempFormatted =
+    tempSlope > 0
+      ? `+${tempSlope}°C`
+      : tempSlope < 0
+        ? `−${Math.abs(tempSlope)}°C`
+        : `0.00°C`;
+
   const whatsappLink = useMemo(() => {
     if (!rotation || !region || !answers || !climate) return '#';
     const lines = [
@@ -72,8 +96,8 @@ export function ResultsDashboard() {
       `Priority: ${priorityLabels[answers.priority!]}`,
       ``,
       `Climate trend:`,
-      `  Rainfall: ${rotation.climate.rainfallTrendPct}% per decade`,
-      `  Temperature: ${rotation.climate.tempTrendC > 0 ? '+' : ''}${rotation.climate.tempTrendC}°C per decade`,
+      `  Rainfall: ${rainfallFormatted} per decade`,
+      `  Temperature: ${tempFormatted} per decade`,
       `  Dry-spell risk: ${rotation.climate.drySpellRisk}`,
       ``,
       `Recommended rotation:`,
@@ -88,7 +112,7 @@ export function ResultsDashboard() {
     ];
     const text = encodeURIComponent(lines.join('\n'));
     return `https://wa.me/?text=${text}`;
-  }, [rotation, region, answers, climate]);
+  }, [rotation, region, answers, climate, rainfallFormatted, tempFormatted]);
 
   if (loading || !answers || !region || !climate || !rotation) {
     return (
@@ -144,7 +168,7 @@ export function ResultsDashboard() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <div className="min-h-screen overflow-x-clip" style={{ background: 'var(--bg)' }}>
       <Navbar />
 
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
@@ -212,7 +236,7 @@ export function ResultsDashboard() {
         </div>
 
         {/* Climate card */}
-        <div className="card mt-6 animate-fade-up p-6" style={{ animationDelay: '0.1s' }}>
+        <div className="card mt-6 animate-fade-up p-4 sm:p-6" style={{ animationDelay: '0.1s' }}>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
               Your shifting climate
@@ -225,16 +249,16 @@ export function ResultsDashboard() {
           {/* Stats */}
           <div className="mb-6 grid grid-cols-2 gap-3">
             <StatCard
-              value={`${rotation.climate.rainfallTrendPct}%`}
+              value={rainfallFormatted}
               label="Rainfall change per decade"
-              trend="down"
-              accent="coral"
+              trend={rainfallTrend}
+              accent={rainfallAccent}
             />
             <StatCard
-              value={`+${rotation.climate.tempTrendC}°C`}
+              value={tempFormatted}
               label="Temperature change per decade"
-              trend="up"
-              accent="gold"
+              trend={tempTrend}
+              accent={tempAccent}
             />
           </div>
 
@@ -245,7 +269,7 @@ export function ResultsDashboard() {
             unit="mm"
             color="#45D19A"
             label="Annual rainfall (mm)"
-            altSummary={`Annual rainfall from ${climate.rainfall[0]}mm in 2001 to ${climate.rainfall[climate.rainfall.length - 1]}mm in 2024, with a ${rotation.climate.rainfallTrendPct}% per decade downward trend.`}
+            altSummary={`Annual rainfall from ${climate.rainfall[0]}mm in 2001 to ${climate.rainfall[climate.rainfall.length - 1]}mm in 2024, with a ${rainfallFormatted} per decade ${rainfallSlope < 0 ? 'downward' : 'upward'} trend.`}
           />
           <div className="mt-4">
             <TrendChart
@@ -254,7 +278,7 @@ export function ResultsDashboard() {
               unit="°C"
               color="#F4C04E"
               label="Average temperature (°C)"
-              altSummary={`Average temperature from ${climate.temperature[0]}°C in 2001 to ${climate.temperature[climate.temperature.length - 1]}°C in 2024, rising ${rotation.climate.tempTrendC}°C per decade.`}
+              altSummary={`Average temperature from ${climate.temperature[0]}°C in 2001 to ${climate.temperature[climate.temperature.length - 1]}°C in 2024, ${tempSlope >= 0 ? 'rising' : 'falling'} ${Math.abs(tempSlope)}°C per decade.`}
             />
           </div>
 
@@ -268,7 +292,7 @@ export function ResultsDashboard() {
         </div>
 
         {/* Rotation card */}
-        <div className="card mt-6 animate-fade-up p-6" style={{ animationDelay: '0.2s' }}>
+        <div className="card mt-6 animate-fade-up p-4 sm:p-6" style={{ animationDelay: '0.2s' }}>
           <div className="mb-5">
             <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
               Your three-season rotation
@@ -327,16 +351,16 @@ export function ResultsDashboard() {
             <MessageCircle className="h-5 w-5" />
             Send plan on WhatsApp
           </a>
-          <div className="flex flex-col min-[420px]:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => navigate('/plan')}
-              className="btn-secondary flex-1"
+              className="btn-secondary flex-1 w-full sm:w-auto"
             >
               Change my answers
             </button>
             <button
               onClick={() => setMethodOpen(true)}
-              className="btn-secondary flex-1"
+              className="btn-secondary flex-1 w-full sm:w-auto"
             >
               <BookOpen className="h-5 w-5" />
               How we calculate this

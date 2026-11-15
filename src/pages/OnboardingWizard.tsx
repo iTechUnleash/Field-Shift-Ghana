@@ -4,7 +4,7 @@ import { MapPin, Droplets, Sun, Cloud, Shovel, Coins, Heart, Waves, Shield } fro
 import { StepShell } from '@/components/StepShell';
 import { OptionCard } from '@/components/OptionCard';
 import { CropIcon } from '@/components/CropIcons';
-import { regions } from '@/data/regions';
+import { beltGroups, getRegionById } from '@/data/regions';
 import { crops } from '@/data/crops';
 import type { Priority, WaterAccess } from '@/lib/rotation';
 import type { FarmerAnswers } from '@/lib/types';
@@ -117,19 +117,35 @@ export function OnboardingWizard() {
       continueLabel={step === 3 ? 'Get my plan' : 'Continue'}
     >
       {step === 1 && (
-        <>
-          {regions.map((region) => (
-            <OptionCard
-              key={region.id}
-              selected={answers.regionId === region.id}
-              onClick={() => setAnswers({ ...answers, regionId: region.id })}
-              title={`${region.name} — ${region.town}`}
-              hint={`Lat ${region.lat.toFixed(4)}, Lon ${region.lon.toFixed(4)}`}
-              icon={<MapPin className="h-6 w-6" style={{ color: 'var(--accent)' }} />}
-              ariaLabel={`Select ${region.name} region, ${region.town}`}
-            />
-          ))}
-        </>
+        <div className="space-y-6">
+          {beltGroups.map((belt) => {
+            const beltRegions = belt.regionIds.map((id) => getRegionById(id)!).filter(Boolean);
+            return (
+              <div key={belt.id} className="space-y-2.5">
+                <p
+                  className="font-display text-xs font-semibold uppercase tracking-wider"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  {belt.label}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {beltRegions.map((region) => (
+                    <OptionCard
+                      key={region.id}
+                      selected={answers.regionId === region.id}
+                      onClick={() => setAnswers({ ...answers, regionId: region.id })}
+                      title={region.name}
+                      hint={region.town}
+                      icon={<MapPin className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: 'var(--accent)' }} />}
+                      ariaLabel={`Select ${region.name} region, ${region.town}`}
+                      compact
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {step === 2 && (

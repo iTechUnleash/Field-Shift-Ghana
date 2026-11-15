@@ -15,7 +15,7 @@ Across West Africa and Ghana in particular, smallholder farmers face increasingl
 Field Shift Ghana bridges satellite Earth observations with grounded agronomic science through a simple 3-step farmer workflow:
 
 1. **Location & NASA POWER Earth Observations:**
-   - The farmer selects their administrative region (Northern, Ashanti, Bono East, or Volta).
+   - The farmer selects their administrative region from all 16 regions of Ghana across the Northern, Middle, and Southern agro-ecological belts.
    - The application queries the **NASA POWER (Prediction Of Worldwide Energy Resources) Agroclimatology (AG)** API for the exact geographic coordinates.
    - It fetches 24 years (2001–2024) of monthly-annual precipitation (`PRECTOTCORR`) and 2-meter air temperature (`T2M`) derived from satellite observations and NASA MERRA-2 assimilation models.
    - Using Ordinary Least Squares (OLS) linear regression, it calculates 10-year decadal rates of change for rainfall and temperature, assessing dry-spell vulnerability by comparing recent 5-year averages against the 24-year historical baseline.

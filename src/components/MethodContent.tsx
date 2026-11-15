@@ -5,7 +5,7 @@ export function MethodContent() {
     {
       icon: Satellite,
       title: 'Data source',
-      body: 'Precipitation (PRECTOTCORR) and 2-meter air temperature (T2M) come from the NASA POWER (Prediction Of Worldwide Energy Resources) Agroclimatology (AG) monthly API. POWER integrates satellite observations and NASA MERRA-2 meteorological assimilation models on a global 0.5° × 0.625° grid.',
+      body: 'Precipitation (PRECTOTCORR) and 2-meter air temperature (T2M) come from the NASA POWER (Prediction Of Worldwide Energy Resources) Agroclimatology (AG) monthly API, covering all 16 administrative regions of Ghana across the Northern, Middle, and Southern belts. POWER integrates satellite observations and NASA MERRA-2 meteorological assimilation models on a global 0.5° × 0.625° grid.',
     },
     {
       icon: Calendar,

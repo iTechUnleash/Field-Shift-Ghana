@@ -29,7 +29,7 @@ function seededRandom(seed: number): () => number {
   };
 }
 
-function linearRegression(x: number[], y: number[]): { slope: number; intercept: number } {
+export function linearRegression(x: number[], y: number[]): { slope: number; intercept: number } {
   const n = x.length;
   const sumX = x.reduce((a, b) => a + b, 0);
   const sumY = y.reduce((a, b) => a + b, 0);

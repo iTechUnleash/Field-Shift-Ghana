@@ -14,14 +14,14 @@ export function Navbar() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-field text-white">
             <Sprout className="h-5 w-5" />
           </div>
-          <span className="font-display text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+          <span className="font-display text-base sm:text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
             Field Shift Ghana
           </span>
         </button>
         <button
           onClick={() => navigate('/plan')}
-          className="btn-primary text-sm"
-          style={{ minHeight: 48, padding: '0 20px' }}
+          className="btn-primary shrink-0 text-xs sm:text-sm"
+          style={{ minHeight: 48, padding: '0 16px' }}
         >
           Plan my season
         </button>

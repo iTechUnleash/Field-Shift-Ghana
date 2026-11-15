@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from 'recharts';
 import type { ClimateSeries } from '@/lib/climate';
+import { linearRegression } from '@/lib/climate';
 
 interface TrendChartProps {
   climate: ClimateSeries;
@@ -32,12 +33,11 @@ export function TrendChart({ climate, dataKey, unit, color, label, altSummary }:
   const padding = (max - min) * 0.15 || 1;
   const yDomain: [number, number] = [Math.floor(min - padding), Math.ceil(max + padding)];
 
-  const n = data.length;
-  const first = data[0].value;
-  const last = data[n - 1].value;
+  const xIndices = data.map((_, i) => i);
+  const reg = linearRegression(xIndices, values);
   const trendData = data.map((d, i) => ({
     ...d,
-    trend: first + ((last - first) * i) / (n - 1),
+    trend: reg.intercept + reg.slope * i,
   }));
 
   const prefersReducedMotion =
@@ -46,11 +46,11 @@ export function TrendChart({ climate, dataKey, unit, color, label, altSummary }:
   const isAnimationActive = !prefersReducedMotion;
 
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0">
       <p className="mb-2 text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
         {label}
       </p>
-      <div className="h-48 w-full" role="img" aria-label={altSummary}>
+      <div className="h-48 w-full min-w-0" role="img" aria-label={altSummary}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={trendData} margin={{ top: 8, right: 8, bottom: 0, left: -28 }}>
             <defs>

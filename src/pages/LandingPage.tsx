@@ -11,7 +11,7 @@ export function LandingPage() {
     {
       num: '1',
       title: 'Pick your region',
-      desc: 'Choose from four farming regions across Ghana — Tamale, Kumasi, Techiman or Ho.',
+      desc: 'Select from all 16 regions across Ghana, spanning the Northern, Middle, and Southern belts.',
       icon: MapPin,
     },
     {
