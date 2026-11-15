@@ -1,6 +1,21 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Layers, Droplets, Sprout, Target, MessageCircle, BookOpen } from 'lucide-react';
+import {
+  ArrowLeft,
+  MapPin,
+  Layers,
+  Droplets,
+  Sprout,
+  Target,
+  MessageCircle,
+  BookOpen,
+  Trees,
+  CheckCircle2,
+  HelpCircle,
+  XCircle,
+  AlertTriangle,
+  Clock,
+} from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Badge } from '@/components/Badge';
@@ -15,8 +30,55 @@ import { getRegionById } from '@/data/regions';
 import { getCropById, familyLabels } from '@/data/crops';
 import { getClimate, type ClimateSeries } from '@/lib/climate';
 import { buildRotation, type RotationResult } from '@/lib/rotation';
+import { rateTreeCrops, type TreeRating } from '@/lib/treecrops';
 import type { FarmerAnswers } from '@/lib/types';
 import { soilLabels, waterLabels, priorityLabels } from '@/lib/types';
+
+function TreeRatingPill({ rating }: { rating: TreeRating }) {
+  if (rating === 'good') {
+    return (
+      <span
+        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
+        style={{
+          background: 'rgba(69, 209, 154, 0.15)',
+          color: 'var(--accent-bright)',
+          border: '1px solid rgba(69, 209, 154, 0.35)',
+        }}
+      >
+        <CheckCircle2 className="h-3.5 w-3.5" />
+        Climate suits it
+      </span>
+    );
+  }
+  if (rating === 'possible') {
+    return (
+      <span
+        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
+        style={{
+          background: 'rgba(244, 192, 78, 0.15)',
+          color: '#d4a032',
+          border: '1px solid rgba(244, 192, 78, 0.35)',
+        }}
+      >
+        <HelpCircle className="h-3.5 w-3.5" />
+        Climate may work
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
+      style={{
+        background: 'rgba(229, 96, 77, 0.12)',
+        color: '#E5604D',
+        border: '1px solid rgba(229, 96, 77, 0.3)',
+      }}
+    >
+      <XCircle className="h-3.5 w-3.5" />
+      Climate not suited
+    </span>
+  );
+}
 
 export function ResultsDashboard() {
   const navigate = useNavigate();
@@ -84,8 +146,17 @@ export function ResultsDashboard() {
         ? `−${Math.abs(tempSlope)}°C`
         : `0.00°C`;
 
+  const treeRatings = useMemo(() => {
+    if (!climate || !rotation) return [];
+    return rateTreeCrops(climate, rotation.climate, region);
+  }, [climate, rotation, region]);
+
   const whatsappLink = useMemo(() => {
     if (!rotation || !region || !answers || !climate) return '#';
+    const goodTreeCrops = treeRatings
+      .filter((t) => t.rating === 'good')
+      .map((t) => t.crop.name);
+
     const lines = [
       `*Field Shift Ghana — Crop Plan for ${region.town}*`,
       ``,
@@ -105,6 +176,8 @@ export function ResultsDashboard() {
         s => `  ${s.label}: ${s.crop.name} (${familyLabels[s.crop.family]}) — ${s.reason}`,
       ),
       ``,
+      `Long-term tree crops (climate suits it): ${goodTreeCrops.length > 0 ? goodTreeCrops.join(', ') : 'none'}`,
+      ``,
       climate.source === 'nasa-power'
         ? `Data: NASA POWER (2001 to 2024)`
         : `Data: Sample data (demo)`,
@@ -112,7 +185,7 @@ export function ResultsDashboard() {
     ];
     const text = encodeURIComponent(lines.join('\n'));
     return `https://wa.me/?text=${text}`;
-  }, [rotation, region, answers, climate, rainfallFormatted, tempFormatted]);
+  }, [rotation, region, answers, climate, rainfallFormatted, tempFormatted, treeRatings]);
 
   if (loading || !answers || !region || !climate || !rotation) {
     return (
@@ -337,6 +410,63 @@ export function ResultsDashboard() {
               </div>
             </Drawer>
           </div>
+        </div>
+
+        {/* Long-term tree crops card */}
+        <div className="card mt-6 animate-fade-up p-4 sm:p-6" style={{ animationDelay: '0.25s' }}>
+          <div className="mb-4">
+            <div className="flex items-center gap-2">
+              <Trees className="h-5 w-5" style={{ color: 'var(--accent)' }} />
+              <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Long-term tree crops
+              </h2>
+            </div>
+            <p className="mt-1 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              These crops stay in the ground for 25 years or more, so we judge them on long-term climate, not on a seasonal rotation. Ratings use satellite climate data averaged over areas about 50 km wide, so rainfall at your exact location can differ. Treat this as a first screen, not a verdict.
+            </p>
+          </div>
+
+          <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
+            {treeRatings.map((item) => (
+              <div key={item.crop.id} className="py-4 first:pt-1 last:pb-1">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-display text-base font-bold" style={{ color: 'var(--text-primary)' }}>
+                      {item.crop.name}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <Clock className="h-3 w-3" />
+                      {item.yearsToHarvest} to first harvest
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {item.watch && (
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
+                        style={{
+                          background: 'rgba(244, 192, 78, 0.15)',
+                          color: '#d4a032',
+                          border: '1px solid rgba(244, 192, 78, 0.4)',
+                        }}
+                      >
+                        <AlertTriangle className="h-3 w-3" />
+                        Watch trend
+                      </span>
+                    )}
+                    <TreeRatingPill rating={item.rating} />
+                  </div>
+                </div>
+
+                <p className="mt-1.5 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  {item.reason}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-4 border-t pt-3 text-xs italic" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+            Planning ranges are approximate. Confirm with COCOBOD or your local extension officer before planting trees.
+          </p>
         </div>
 
         {/* Actions */}

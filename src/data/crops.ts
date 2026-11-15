@@ -23,6 +23,9 @@ export const crops: Crop[] = [
   { id: 'millet', name: 'Pearl Millet', family: 'cereal', droughtTolerance: 3, income: 1, soilBenefit: 1, waterNeed: 1, iconKey: 'millet' },
   { id: 'yam', name: 'Yam', family: 'root', droughtTolerance: 2, income: 3, soilBenefit: 1, waterNeed: 2, iconKey: 'yam' },
   { id: 'pepper', name: 'Pepper', family: 'vegetable', droughtTolerance: 2, income: 3, soilBenefit: 1, waterNeed: 2, iconKey: 'pepper' },
+  { id: 'rice', name: 'Rice', family: 'cereal', droughtTolerance: 1, income: 2, soilBenefit: 1, waterNeed: 3, iconKey: 'rice' },
+  { id: 'okra', name: 'Okra', family: 'vegetable', droughtTolerance: 2, income: 2, soilBenefit: 1, waterNeed: 2, iconKey: 'okra' },
+  { id: 'sweet-potato', name: 'Sweet Potato', family: 'root', droughtTolerance: 3, income: 2, soilBenefit: 1, waterNeed: 1, iconKey: 'sweet-potato' },
 ];
 
 export function getCropById(id: string): Crop | undefined {

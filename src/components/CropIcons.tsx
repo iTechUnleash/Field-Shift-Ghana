@@ -14,6 +14,9 @@ export function CropIcon({ iconKey, className = 'w-8 h-8' }: { iconKey: string; 
     millet: MilletIcon,
     yam: YamIcon,
     pepper: PepperIcon,
+    rice: RiceIcon,
+    okra: OkraIcon,
+    'sweet-potato': SweetPotatoIcon,
   };
   const Icon = icons[iconKey] || MaizeIcon;
   return <Icon className={className} />;
@@ -135,6 +138,56 @@ export function PepperIcon({ className = 'w-8 h-8' }: IconProps) {
       <path d="M20 12 Q24 10 28 12" stroke="#127A55" strokeWidth="2" fill="none" strokeLinecap="round" />
       <path d="M22 16 Q18 28 22 38 Q26 40 28 34 Q30 24 26 16 Z" fill="#E5604D" stroke="#c8453a" strokeWidth="1.5" />
       <path d="M24 18 Q22 28 24 34" stroke="#f08a7a" strokeWidth="1" fill="none" opacity="0.6" />
+    </svg>
+  );
+}
+
+export function RiceIcon({ className = 'w-8 h-8' }: IconProps) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M22 42 Q23 26 27 12" stroke="#7a6a4a" strokeWidth="2" strokeLinecap="round" />
+      <path d="M27 12 Q34 16 33 24" stroke="#d4a032" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <path d="M20 42 Q19 28 15 20" stroke="#45D19A" strokeWidth="1.5" strokeLinecap="round" />
+      {Array.from({ length: 5 }).map((_, i) => (
+        <g key={i}>
+          <ellipse
+            cx={25 + (i % 2) * 5}
+            cy={14 + i * 3.5}
+            rx="2"
+            ry="3.5"
+            transform={`rotate(${15 + i * 5} ${25 + (i % 2) * 5} ${14 + i * 3.5})`}
+            fill="#F4C04E"
+            stroke="#d4a032"
+            strokeWidth="0.8"
+          />
+        </g>
+      ))}
+      <path d="M16 28 Q24 24 28 32" stroke="#45D19A" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function OkraIcon({ className = 'w-8 h-8' }: IconProps) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M24 6 L24 12" stroke="#127A55" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M19 12 Q24 10 29 12 L27 15 L21 15 Z" fill="#127A55" />
+      <path d="M21 15 Q26 24 24 40 Q22 24 27 15" fill="#45D19A" stroke="#127A55" strokeWidth="1.5" />
+      <path d="M24 15 L24 39" stroke="#127A55" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+      <path d="M22 17 Q23 27 24 37" stroke="#6ee0b5" strokeWidth="0.8" strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+export function SweetPotatoIcon({ className = 'w-8 h-8' }: IconProps) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <path d="M24 8 Q23 16 24 20" stroke="#45D19A" strokeWidth="2" strokeLinecap="round" />
+      <path d="M24 12 Q18 8 16 12 M24 14 Q30 10 32 14" stroke="#45D19A" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M14 28 Q18 18 30 22 Q36 26 34 32 Q30 38 20 36 Q12 34 14 28 Z" fill="#E5604D" stroke="#c8453a" strokeWidth="1.5" />
+      <path d="M17 28 Q24 25 31 29" stroke="#f08a7a" strokeWidth="1" fill="none" opacity="0.5" />
+      <circle cx="21" cy="31" r="0.8" fill="#c8453a" />
+      <circle cx="27" cy="27" r="0.8" fill="#c8453a" />
     </svg>
   );
 }

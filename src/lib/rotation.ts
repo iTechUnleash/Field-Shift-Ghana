@@ -77,9 +77,19 @@ function scoreCrop(
     if (crop.id === 'pepper') score += 12;
     if (crop.id === 'maize') score += 10;
     if (crop.id === 'soybean') score += 8;
+    if (crop.id === 'rice') score += 18;
+    if (crop.id === 'okra') score += 6;
   } else {
     // Rain-fed: water need is penalized proportional to dry factor
     score -= crop.waterNeed * (4.5 * dryFactor);
+    // Rice only scores well rain-fed in high-rainfall zones on clay soil
+    if (crop.id === 'rice') {
+      if (inputs.soil === 'clay' && (inputs.region.belt === 'southern' || inputs.region.avgRainfall >= 1300)) {
+        score += 14;
+      } else {
+        score -= 28;
+      }
+    }
   }
 
   // Priority tuning
@@ -103,6 +113,7 @@ function scoreCrop(
       // Strongly favour low water need and high drought tolerance
       score += (4 - crop.waterNeed) * 10;
       score += crop.droughtTolerance * 9;
+      if (crop.id === 'cassava') score += 6;
       break;
 
     case 'risk':
@@ -113,7 +124,9 @@ function scoreCrop(
       if (crop.id === 'millet') score += 14;
       if (crop.id === 'sorghum') score += 8;
       if (crop.id === 'cowpea') score += 8;
-      if (crop.id === 'cassava') score += 6;
+      if (crop.id === 'cassava') score += 10;
+      if (crop.id === 'sweet-potato') score += 7;
+      if (crop.id === 'okra') score += 10;
       break;
   }
 
@@ -124,22 +137,32 @@ function scoreCrop(
     if (crop.id === 'groundnut') score += 10;
     if (crop.id === 'millet') score += 12;
     if (crop.id === 'cowpea') score += 6;
+    if (crop.id === 'sweet-potato') score += 8;
+    if (crop.id === 'cassava') score += 4;
+    if (crop.id === 'okra') score += 6;
+    if (crop.id === 'rice') score -= 16;
     if (crop.waterNeed === 3) score -= 10;
   } else if (inputs.soil === 'clay') {
     // Clay: heavy, moisture retentive. Penalises groundnut (pod rot) and cassava (tuber rot); favours cereals and soybean
     if (crop.id === 'groundnut') score -= 24;
     if (crop.id === 'cassava') score -= 18;
+    if (crop.id === 'sweet-potato') score -= 16;
     if (crop.family === 'cereal') score += 8;
+    if (crop.id === 'rice') score += 10;
     if (crop.id === 'soybean') score += 10;
     if (crop.id === 'yam') score += 8;
     if (crop.id === 'pepper') score += 8;
+    if (crop.id === 'okra') score += 4;
     if (crop.id === 'maize') score += 6;
   } else {
     // Loam: balanced. Great for root tubers, vegetables, and maize
     if (crop.id === 'yam') score += 8;
+    if (crop.id === 'cassava') score += 6;
+    if (crop.id === 'sweet-potato') score += 4;
     if (crop.id === 'maize') score += 6;
     if (crop.id === 'tomato' && inputs.water === 'irrigated') score += 8;
     if (crop.id === 'pepper') score += 6;
+    if (crop.id === 'okra') score += 6;
   }
 
   // Regional agro-ecological tuning across Ghana's ecological belts
@@ -148,30 +171,39 @@ function scoreCrop(
     if (crop.id === 'millet') score += 6;
     if (crop.id === 'sorghum') score += 4;
     if (crop.id === 'cowpea') score += 4;
+    if (crop.id === 'sweet-potato') score += 4;
+    if (crop.id === 'okra') score += 4;
   } else if (inputs.region.belt === 'middle') {
     // Middle belt: Forest-Savanna transition zone (Bono, Bono East, Ahafo, Oti)
     if (crop.id === 'maize') score += 7;
     if (crop.id === 'yam') score += 7;
+    if (crop.id === 'cassava') score += 5;
     if (crop.id === 'soybean') score += 5;
+    if (crop.id === 'sweet-potato') score += 3;
+    if (crop.id === 'okra') score += 4;
     if (crop.family === 'vegetable') score += 4;
   } else {
     // Southern belt: Forest & Coastal zones (Ashanti, Eastern, Western, Western North, Central, Greater Accra, Volta)
     if (crop.id === 'maize') score += 6;
     if (crop.id === 'yam') score += 6;
-    if (crop.id === 'cassava') score += 6;
+    if (crop.id === 'cassava') score += 9;
+    if (crop.id === 'rice') score += 5;
     if (crop.id === 'soybean') score += 4;
+    if (crop.id === 'okra') score += 5;
     if (crop.family === 'vegetable') score += 5;
   }
 
   // Seasonal positioning nuance to break rigid repetitive ordering
   if (seasonIndex === 0) {
     if (crop.family === 'cereal' && inputs.lastCrop !== 'cereal') score += 4;
+    if (crop.id === 'okra') score += 4;
   } else if (seasonIndex === 1) {
     if (crop.family === 'legume') score += 5;
+    if (crop.id === 'sweet-potato') score += 4;
     if (crop.family === 'root') score += 3;
   } else if (seasonIndex === 2) {
     if (crop.family === 'vegetable' && inputs.water === 'irrigated') score += 6;
-    if (crop.id === 'cassava') score += 4;
+    if (crop.id === 'cassava') score += 7;
   }
 
   return score;
@@ -211,6 +243,8 @@ function reasonForCrop(
         sentence1 = 'Capitalises on residual nitrogen left by last season’s legume, producing sturdy biomass and robust grain heads.';
       } else if (crop.id === 'millet') {
         sentence1 = 'Draws efficiently on nitrogen fixed by the previous legume to generate dense, hardy grain panicles.';
+      } else if (crop.id === 'rice') {
+        sentence1 = 'Capitalises on legume nitrogen in lowland or irrigated paddies to drive heavy panicle development.';
       } else {
         sentence1 = 'Capitalises on the nitrogen fixed by last season’s legume, driving vigorous vegetative growth and high yield.';
       }
@@ -219,6 +253,8 @@ function reasonForCrop(
         sentence1 = 'Provides reliable staple grain while breaking soil-borne pathogen cycles between rotational phases.';
       } else if (crop.id === 'millet') {
         sentence1 = 'Hardy cereal that diversifies root profiles and interrupts weed cycles in your field.';
+      } else if (crop.id === 'rice') {
+        sentence1 = 'High-yielding staple cereal that thrives in low-lying moist soils and water-managed field basins.';
       } else {
         sentence1 = 'Provides dependable staple grain while breaking root pest and weed cycles across the rotation.';
       }
@@ -226,6 +262,8 @@ function reasonForCrop(
   } else if (crop.family === 'root') {
     if (crop.id === 'cassava') {
       sentence1 = 'Deep-rooting woody shrub that loosens compacted subsoil while accumulating starch reserves underground.';
+    } else if (crop.id === 'sweet-potato') {
+      sentence1 = 'Vigorous ground-covering root crop whose dense creeping vines shade the soil and suppress weeds.';
     } else {
       sentence1 = 'Extensive root network aerates the soil profile and harnesses residual moisture from deeper ground layers.';
     }
@@ -233,12 +271,16 @@ function reasonForCrop(
     if (inputs.water === 'irrigated') {
       if (crop.id === 'tomato') {
         sentence1 = 'Fast-maturing horticultural crop well suited to controlled bed management and irrigation.';
+      } else if (crop.id === 'okra') {
+        sentence1 = 'Continuous-harvest vegetable that responds to irrigation with regular, prolific pod flushes.';
       } else {
         sentence1 = 'Continuous-bearing vegetable that thrives under irrigated cultivation with high per-plant productivity.';
       }
     } else {
       if (crop.id === 'tomato') {
         sentence1 = 'Intensive vegetable crop that maximizes land productivity and diversifies field biology.';
+      } else if (crop.id === 'okra') {
+        sentence1 = 'Hardy, fast-maturing vegetable variety that yields repeatedly across changing seasonal rains.';
       } else {
         sentence1 = 'Sturdy vegetable variety that broadens field ecology while extending the harvest calendar.';
       }
@@ -295,6 +337,21 @@ function reasonForCrop(
     if (inputs.priority === 'income') candidates.push('High-value cash crop that commands premium prices in urban wholesale markets.');
     if (inputs.priority === 'risk') candidates.push('Extended fruiting window spreads out yield risk and dampens market price volatility.');
     if (inputs.water === 'irrigated') candidates.push('Controlled watering delivers continuous flowering and vigorous fruiting.');
+  } else if (crop.id === 'rice') {
+    if (inputs.water === 'irrigated') candidates.push('Controlled irrigation guarantees the steady water depth required for optimal tillering and grain fill.');
+    if (inputs.soil === 'clay') candidates.push('Moisture-retaining clay soil prevents deep seepage, sustaining lowland water levels.');
+    if (inputs.priority === 'income') candidates.push('Strong national consumer demand for locally milled rice ensures high farm-gate pricing.');
+    if (inputs.priority === 'risk') candidates.push('Secures essential household staple grain while providing marketable surplus.');
+  } else if (crop.id === 'okra') {
+    if (inputs.priority === 'income') candidates.push('Frequent pod picking provides recurrent weekly cash income across an extended season.');
+    if (inputs.priority === 'risk') candidates.push('Staggered flowering cushions farm revenue against single-event dry spells.');
+    if (inputs.priority === 'water') candidates.push('Tolerates moderate dry spells with a deep taproot that reaches subsoil moisture.');
+    if (inputs.priority === 'soil') candidates.push('Generous leaf drop adds protective organic mulch to the topsoil.');
+  } else if (crop.id === 'sweet-potato') {
+    if (inputs.priority === 'water') candidates.push('High drought tolerance and modest water needs safeguard root tuber yield.');
+    if (inputs.priority === 'risk') candidates.push('Underground storage offers harvest flexibility, buffering the household against market shocks.');
+    if (inputs.priority === 'income') candidates.push('Strong demand for orange-fleshed and traditional tubers provides fast market turnover.');
+    if (inputs.soil === 'sandy') candidates.push('Light sandy loam enables clean, symmetrical tuber expansion and easy digging.');
   }
 
   // 2. Field & Climate condition candidates

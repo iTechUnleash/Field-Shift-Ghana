@@ -1,4 +1,4 @@
-import { Satellite, Calendar, Repeat, Droplets, Layers, AlertTriangle, Database } from 'lucide-react';
+import { Satellite, Calendar, Repeat, Droplets, Layers, AlertTriangle, Database, Trees } from 'lucide-react';
 
 export function MethodContent() {
   const sections = [
@@ -34,9 +34,14 @@ export function MethodContent() {
       body: 'We compare recent rainfall (last 5 years) against the 24-year average. If recent rainfall is well below average, the risk meter moves to moderate or high.',
     },
     {
+      icon: Trees,
+      title: 'Long-term tree crops',
+      body: 'Perennial tree crops (cocoa, oil palm, cashew, shea) remain in the field for 25 to 50 years, so they are evaluated independently of seasonal rotations against 24-year satellite climate baselines. Each crop receives a clear rating: "Climate suits it" (both rainfall and temperature within ideal ranges), "Climate may work" (within workable ranges), or "Climate not suited" (outside workable bounds; shea is also restricted to its native savanna and transition habitats). Decadal drying below −3% or warming above +0.3°C triggers a "Watch trend" risk flag for sensitive perennials.',
+    },
+    {
       icon: AlertTriangle,
       title: 'Honest limitations',
-      body: 'NASA POWER satellite trends reflect 24-year climatic shifts rather than day-to-day weather forecasts. If NASA servers are momentarily unreachable or time out, the system automatically falls back to local sample baselines. Always confirm rotation plans with your local agricultural extension officer.',
+      body: 'NASA POWER satellite trends reflect 24-year macro-climatic shifts rather than day-to-day weather forecasts. Tree crop ratings come from climate only. Soil, pests, diseases and local conditions matter just as much, so confirm with COCOBOD or a local extension officer. If NASA servers are unreachable, the system falls back to sample baselines. Always confirm rotation and tree planting plans with your local agricultural extension officer.',
     },
   ];
 

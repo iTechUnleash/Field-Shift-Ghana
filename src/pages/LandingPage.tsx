@@ -23,7 +23,7 @@ export function LandingPage() {
     {
       num: '3',
       title: 'Get your plan',
-      desc: 'See your shifting climate and a three-season crop rotation with clear reasons.',
+      desc: 'See your shifting climate, a three-season crop rotation, and long-term tree crop suitability (cocoa, oil palm, cashew, shea).',
       icon: ArrowRight,
     },
   ];
@@ -165,6 +165,10 @@ export function LandingPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-8 rounded-2xl border p-4 text-xs leading-relaxed" style={{ borderColor: 'var(--border)', background: 'var(--bg-surface)', color: 'var(--text-muted)' }}>
+          <strong style={{ color: 'var(--text-secondary)' }}>Long-term tree crop planning:</strong> Tree crop suitability (cocoa, oil palm, cashew, shea) is evaluated separately using 24-year satellite climate baselines. As an honest limitation, tree ratings reflect climate only; they do not assess soil chemistry, drainage, pests, or disease. Always confirm with COCOBOD or your local extension officer.
         </div>
       </section>
 

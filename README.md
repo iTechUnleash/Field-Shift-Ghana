@@ -22,14 +22,24 @@ Field Shift Ghana bridges satellite Earth observations with grounded agronomic s
    - Responses are cached locally in the browser (`localStorage`) for 7 days with automated offline sample fallback if NASA servers are momentarily unreachable.
 
 2. **Field Profile & Priorities:**
-   - The farmer provides their field characteristics: soil texture (sandy, loam, clay), water access (rain-fed, irrigated), last crop grown (selected from 10 regional staple and cash crops), and their core priority (more income, healthier soil, saving water, or lower risk).
+   - The farmer provides their field characteristics: soil texture (sandy, loam, clay), water access (rain-fed, irrigated), last crop grown (selected from 13 regional staple, vegetable, and cash crops), and their core priority (more income, healthier soil, saving water, or lower risk).
 
 3. **Agronomic Rotation Engine:**
    The recommendation engine scores and schedules a tailored three-season rotation following four core principles:
    - **Strict Family Alternation:** Never repeats the same botanical family (cereal, legume, root & tuber, vegetable) back-to-back, breaking pest and pathogen cycles naturally.
    - **Legume Nitrogen Economy:** Strategically introduces nitrogen-fixing legumes (groundnut, cowpea, soybean) to replenish soil fertility without artificial fertilizers, while ensuring plans maintain botanical diversity.
-   - **Climate & Water Calibration:** Adjusts water penalties dynamically based on NASA dry-spell risk. Farmers with rain-fed fields in drought-prone zones receive hardy, deep-rooting varieties (pearl millet, sorghum, cassava), while irrigated fields unlock high-margin horticultural crops (tomato, pepper).
-   - **Soil Matching:** Rewards soil-appropriate varieties (e.g. pearl millet and groundnut in sandy soil; moisture-loving cereals and soybean in heavy clay) and penalizes waterlogging-sensitive crops.
+   - **Climate & Water Calibration:** Adjusts water penalties dynamically based on NASA dry-spell risk. Farmers with rain-fed fields in drought-prone zones receive hardy, deep-rooting varieties (pearl millet, sorghum, cassava, sweet potato), while irrigated fields or high-rainfall clay beds unlock water-loving or high-margin crops (rice, tomato, pepper, okra).
+   - **Soil Matching:** Rewards soil-appropriate varieties (e.g. pearl millet, groundnut, and sweet potato in sandy soil; moisture-loving cereals, rice, and soybean in heavy clay) and penalizes waterlogging-sensitive crops.
+
+4. **Long-Term Tree Crop Suitability:**
+   Perennial tree crops (cocoa, oil palm, cashew, shea) remain in the field for 25 to 50+ years, so they are not included in the seasonal rotation. Instead, they are evaluated separately against 24-year satellite climate baselines:
+   - **Rating Tiers:** Each tree crop is rated as **"Climate suits it"** (ideal rainfall and temperature ranges), **"Climate may work"** (within workable ranges), or **"Climate not suited"** (outside viable climate thresholds, or shea outside its native northern savanna and transition habitat).
+   - **Cocoa:** Ideal in shaded humid forest belts (1,400–2,000 mm rainfall, 21–28°C), workable down to 1,250 mm.
+   - **Oil Palm:** High-yielding perennial requiring abundant moisture (1,800–2,500 mm rainfall, 24–28°C), workable down to 1,500 mm.
+   - **Cashew:** Drought-resilient export crop thriving in transition and savanna woodland (900–1,500 mm rainfall, 24–30°C).
+   - **Shea:** Indigenous savanna tree extraordinarily resilient to heat and drought (900–1,300 mm rainfall, 24–30°C; evaluated in the Northern belt and Bono East).
+   - **Trend Watch Tag:** Flags climate vulnerabilities when decadal rainfall declines below −3% or warming exceeds +0.3°C for moisture-sensitive perennials (cocoa, oil palm).
+   - **Coarse Grid First Screen:** Ratings use satellite climate data averaged over ~50 km wide grid cells; local microclimates can differ. Treat as a preliminary screen rather than a final verdict.
 
 ---
 
@@ -131,6 +141,7 @@ Because `vite.config.ts` includes `base: './'` and routing uses `HashRouter`, th
 ## Honest Limitations & Disclaimer
 
 - **Decision-Support Only:** Field Shift Ghana is an informational decision-support tool. It does not replace on-the-ground agronomic extension services.
+- **Tree Crop Scope (Climate-Only):** Tree crop suitability ratings evaluate 24-year satellite climate averages (annual rainfall and temperature) only. They do NOT evaluate soil depth, pH, drainage capacity, local water tables, pests (such as cocoa swollen shoot virus or mirids), or fungal pathogens (such as black pod). Always consult the Ghana Cocoa Board (COCOBOD), the Tree Crop Development Authority (TCDA), or local agricultural extension officers before investing in tree seedlings.
 - **Rule-Based Guidance:** Recommendations are generated through rule-based scoring models calibrated to general Ghanaian agro-ecological zones and 24-year satellite climate trends. Local microclimates, drainage patterns, pest outbreaks, and soil chemistry vary significantly from field to field.
 - **Seasonal Timing:** In northern Ghana, rainfall is largely unimodal (one main rainy season per calendar year followed by a dry season), meaning a three-season plan can span up to three agricultural years. In southern Ghana, rainfall is bimodal (major and minor rainy seasons).
 - **Extension Officer Verification:** **Always confirm crop selections and planting schedules with your local agricultural extension officer** or district Ministry of Food and Agriculture (MoFA) representative before purchasing seeds or planting.
